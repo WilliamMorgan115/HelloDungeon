@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,16 +14,18 @@ namespace Hello_Dungeon
             public float health;
             public float mana;
             public int strength;
+            public int magic;
             public int agility;
             public int gold;
             public float armor;
             public string role;
 
-            public Player(float health, float mana, int strength, int agility, int gold, float armor, string role)
+            public Player(float health, float mana, int strength, int magic, int agility, int gold, float armor, string role)
             {
                 this.health = health;
                 this.mana = mana;
                 this.strength = strength;
+                this.magic = magic;
                 this.agility = agility;
                 this.gold = gold;
                 this.armor = armor;
@@ -34,7 +37,15 @@ namespace Hello_Dungeon
             public float health;
             public int strength;
             public float armor;
-            public string name;
+            public string type;
+            
+            public Enemy(float health, int strength, float armor, string type)
+            {
+                this.health = health;
+                this.strength = strength;
+                this.armor = armor;
+                this.type = type;
+            }
         }
         public void Run()
         {
@@ -45,7 +56,7 @@ namespace Hello_Dungeon
             Console.WriteLine("Welcome to my dungeon!");
             Console.WriteLine();
             int input = GetInput("Are you a Warrior or are you a Wizard?", "Warrior", "Wizard");
-            Player player = new Player(health: 100, mana: 30, strength: 80, agility: 50, gold: 0, armor: 30, role: "");
+            Player player = new Player(health: 100, mana: 30, strength: 80, magic: 0, agility: 50, gold: 0, armor: 30, role: "");
             if (input == 1)
             {
                 player.role = "Warrior";
@@ -58,6 +69,7 @@ namespace Hello_Dungeon
                 player.health = 70;
                 player.mana = 80;
                 player.strength = 20;
+                player.magic = 80;
                 player.agility = 20;
                 player.armor = 10;
                 player.role = "Wizard";
@@ -95,18 +107,35 @@ namespace Hello_Dungeon
             }
             else if (input == 2)
             {
-                input = GetInput("You enter the right door, and walk right into a Goblin! They ready themselves, prepared to strike. What will you do?", "Attack", "Spell");
-                if (input == 1)
+                Enemy goblin = new Enemy(50, 5, 0, "Goblin");
+                while (goblin.health > 0)
                 {
-                    Console.WriteLine("");
+                    input = GetInput("You enter the right door, and walk right into a " + goblin.type + "! They ready themselves, prepared to strike. What will you do?", "Attack", "Spell");
+                    if (input == 1)
+                    {
+                        Console.WriteLine("You strike the goblin and deal " + damageDealing(player.strength, goblin.armor, goblin.health) + " damage!");
+                        Console.WriteLine("The " + goblin.type + " counterattacks and deals " + damageDealing(goblin.strength, player.armor, player.health) + " damage!");
+                    }
+                    else if (input == 2)
+                    {
+                        if (player.magic == 0)
+                        {
+                            Console.WriteLine("You don't have any spells!");
+                            Console.WriteLine("The " + goblin.type + " seizes this opportunity and deals " + damageDealing(goblin.strength, player.armor, player.health) + " " +
+                                "damage to you!");
+                        }
+                        else
+                        {
+                            Console.WriteLine("You cast a Fireball and deal " + damageDealing(player.magic, goblin.armor, goblin.health) + " damage!");
+                            Console.WriteLine("Shaking off the fire, the " + goblin.type + " runs up and strike you for " + damageDealing(goblin.strength, player.armor, player.health)
+                                + " damage");
+                        }
+                    }
                 }
-                else if (input == 2)
-                {
-                    Console.WriteLine("");
-                }
+                Console.Clear();
+                Console.WriteLine("You have slain the " + goblin.type + "!");
             }
         }
-
         int GetInput(string description, string option1, string option2)
         {
             string input = "";
@@ -155,6 +184,21 @@ namespace Hello_Dungeon
             Console.WriteLine("Gold: " + player.gold);
             Console.WriteLine("Armor: " + player.armor);
             Console.WriteLine("Role: " + player.role);
+        }
+
+        static float damageDealing(int a, float b, float c)
+        {
+            //a is attacking entity's strength, b is victim's armor, c is victim's health, d (below) is how much damage is dealt
+            float d = a - b;
+            c -= d;
+            if(d < 0)
+            {
+                return 0;
+            }
+            else
+            {
+            return d;
+            }
         }
     }
 }
