@@ -50,6 +50,30 @@ namespace Hello_Dungeon
         public void Run()
         {
             bool isPlayerDead = false;
+            /*while (isPlayerDead == false)
+            {
+                if (currentArea == 1)
+                {
+                    Room1();
+                }
+                if (currentArea == 2)
+                {
+                    Room2();
+                }
+                if (currentArea == 3)
+                {
+                    Room3();
+                }
+                if (playerIsAlive == false || currentArea == 3)
+                {
+                    DisplayMainMenu();
+                }
+                else if (playerIsAlive == true && currentArea != 3)
+                {
+                    currentArea++;
+                }
+
+            }*/
 
             Console.WriteLine("Hello, Player!");
             Console.WriteLine();
@@ -115,6 +139,9 @@ namespace Hello_Dungeon
                     {
                         Console.WriteLine("You strike the goblin and deal " + damageDealing(player.strength, goblin.armor, goblin.health) + " damage!");
                         Console.WriteLine("The " + goblin.type + " counterattacks and deals " + damageDealing(goblin.strength, player.armor, player.health) + " damage!");
+                        goblin.health -= damageDealing(player.strength, goblin.armor, goblin.health);
+                        player.health -= damageDealing(goblin.strength, player.armor, player.health);
+                        Console.ReadKey();
                     }
                     else if (input == 2)
                     {
@@ -123,12 +150,18 @@ namespace Hello_Dungeon
                             Console.WriteLine("You don't have any spells!");
                             Console.WriteLine("The " + goblin.type + " seizes this opportunity and deals " + damageDealing(goblin.strength, player.armor, player.health) + " " +
                                 "damage to you!");
+                            player.health -= damageDealing(goblin.strength, player.armor, player.health);
+                            Console.ReadKey();
                         }
                         else
                         {
                             Console.WriteLine("You cast a Fireball and deal " + damageDealing(player.magic, goblin.armor, goblin.health) + " damage!");
                             Console.WriteLine("Shaking off the fire, the " + goblin.type + " runs up and strike you for " + damageDealing(goblin.strength, player.armor, player.health)
                                 + " damage");
+                            goblin.health -= damageDealing(player.magic, goblin.armor, goblin.health);
+                            player.health -= damageDealing(goblin.strength, player.armor, player.health);
+                            Console.ReadKey();
+
                         }
                     }
                 }
